@@ -1,0 +1,17 @@
+test:
+  workers:
+    number: 1  # 只需要一个worker来执行查询
+  rounds:
+    
+    - label: Query and save world state
+      description: Query the entire world state and save it to a file
+      txNumber: 1  # 只需要执行一次
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1  # 低TPS即可
+      workload:
+        module: benchmarks/samples/fabric/fabcar/queryWorldState.js  # 指向上面创建的模块
+        arguments:
+          contractId: fabcar  # 链码ID
+          outputPath: ./world_state.json  # 可选，自定义输出路径

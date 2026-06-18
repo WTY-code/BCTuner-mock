@@ -1,0 +1,123 @@
+{
+  "chaincode": "smallbank",
+  "histograms": [],
+  "joint_groups": [],
+  "bypass_functions": [
+    "query",
+    "query_all_accounts"
+  ],
+  "functions": {
+    "create_account": {
+      "body": [
+        {
+          "type": "read",
+          "key": "account:${arg.0}"
+        },
+        {
+          "type": "write",
+          "key": "account:${arg.0}"
+        }
+      ]
+    },
+    "deposit_checking": {
+      "body": [
+        {
+          "type": "read",
+          "key": "account:${arg.1}"
+        },
+        {
+          "type": "write",
+          "key": "account:${arg.1}"
+        }
+      ]
+    },
+    "write_check": {
+      "body": [
+        {
+          "type": "read",
+          "key": "account:${arg.1}"
+        },
+        {
+          "type": "write",
+          "key": "account:${arg.1}"
+        }
+      ]
+    },
+    "transact_savings": {
+      "body": [
+        {
+          "type": "read",
+          "key": "account:${arg.1}"
+        },
+        {
+          "type": "write",
+          "key": "account:${arg.1}"
+        }
+      ]
+    },
+    "send_payment": {
+      "body": [
+        {
+          "type": "read",
+          "key": "account:${arg.1}"
+        },
+        {
+          "type": "read",
+          "key": "account:${arg.2}"
+        },
+        {
+          "type": "write",
+          "key": "account:${arg.1}"
+        },
+        {
+          "type": "write",
+          "key": "account:${arg.2}"
+        }
+      ]
+    },
+    "amalgamate": {
+      "body": [
+        {
+          "type": "read",
+          "key": "account:${arg.0}"
+        },
+        {
+          "type": "read",
+          "key": "account:${arg.1}"
+        },
+        {
+          "type": "write",
+          "key": "account:${arg.0}"
+        },
+        {
+          "type": "write",
+          "key": "account:${arg.1}"
+        }
+      ]
+    },
+    "query": {
+      "body": [
+        {
+          "type": "read",
+          "key": "account:${arg.0}"
+        }
+      ]
+    },
+    "query_all_accounts": {
+      "body": [
+        {
+          "type": "iterate",
+          "var": "i",
+          "start": "0",
+          "count": "*",
+          "body": [
+            {
+              "type": "read",
+              "key": "account:${arg.0}"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

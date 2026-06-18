@@ -1,0 +1,331 @@
+{
+  "network_type": "private",
+  "machines": [
+    {
+      "name": "machine1",
+      "public_ip": "",
+      "private_ip": "192.168.0.227",
+      "user": "username",
+      "password": "yourpasssword"
+    },
+    {
+      "name": "machine2",
+      "public_ip": "",
+      "private_ip": "192.168.0.200",
+      "user": "username",
+      "password": "yourpasssword"
+    },
+    {
+      "name": "machine3",
+      "public_ip": "",
+      "private_ip": "192.168.0.122",
+      "user": "username",
+      "password": "yourpasssword"
+    },
+    {
+      "name": "machine4",
+      "public_ip": "",
+      "private_ip": "192.168.0.129",
+      "user": "username",
+      "password": "yourpasssword"
+    },
+    {
+      "name": "machine5",
+      "public_ip": "",
+      "private_ip": "192.168.0.63",
+      "user": "username",
+      "password": "yourpasssword"
+    },
+    {
+      "name": "machine6",
+      "public_ip": "",
+      "private_ip": "192.168.0.134",
+      "user": "username",
+      "password": "yourpasssword"
+    },
+    {
+      "name": "machine7",
+      "public_ip": "",
+      "private_ip": "192.168.0.251",
+      "user": "username",
+      "password": "yourpasssword"
+    },
+    {
+      "name": "machine8",
+      "public_ip": "",
+      "private_ip": "192.168.0.205",
+      "user": "username",
+      "password": "yourpasssword"
+    },
+    {
+      "name": "machine9",
+      "public_ip": "",
+      "private_ip": "192.168.0.14",
+      "user": "username",
+      "password": "yourpasssword"
+    },
+    {
+      "name": "machine10",
+      "public_ip": "",
+      "private_ip": "192.168.0.244",
+      "user": "username",
+      "password": "yourpasssword"
+    }
+  ],
+  "topology": {
+    "orderers": {
+      "count": 3,
+      "domain": "example.com",
+      "placements": [
+        {
+          "node": "orderer0",
+          "machine": "machine1"
+        },
+        {
+          "node": "orderer1",
+          "machine": "machine1"
+        },
+        {
+          "node": "orderer2",
+          "machine": "machine2"
+        }
+      ]
+    },
+    "orgs": [
+      {
+        "name": "Org1",
+        "domain": "org1.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine1"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine1"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine1"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine1"
+          }
+        ]
+      },
+      {
+        "name": "Org2",
+        "domain": "org2.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine2"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine2"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine2"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine2"
+          }
+        ]
+      },
+      {
+        "name": "Org3",
+        "domain": "org3.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine3"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine3"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine3"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine3"
+          }
+        ]
+      },
+      {
+        "name": "Org4",
+        "domain": "org4.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine4"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine4"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine4"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine4"
+          }
+        ]
+      },
+      {
+        "name": "Org5",
+        "domain": "org5.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine5"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine5"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine5"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine5"
+          }
+        ]
+      },
+      {
+        "name": "Org6",
+        "domain": "org6.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine6"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine6"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine6"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine6"
+          }
+        ]
+      },
+      {
+        "name": "Org7",
+        "domain": "org7.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine7"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine7"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine7"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine7"
+          }
+        ]
+      },
+      {
+        "name": "Org8",
+        "domain": "org8.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine8"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine8"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine8"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine8"
+          }
+        ]
+      },
+      {
+        "name": "Org9",
+        "domain": "org9.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine9"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine9"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine9"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine9"
+          }
+        ]
+      },
+      {
+        "name": "Org10",
+        "domain": "org10.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine10"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine10"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine10"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine10"
+          }
+        ]
+      }
+    ]
+  },
+  "channel": {
+    "name": "mychannel",
+    "profile": "TwoOrgsChannel"
+  }
+}

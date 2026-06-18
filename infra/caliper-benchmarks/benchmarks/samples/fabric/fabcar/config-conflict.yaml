@@ -1,0 +1,35 @@
+test:
+  workers:
+    number: 1
+  rounds:
+    - label: Create initial cars for conflict testing
+      txNumber: 100  # 创建100辆车
+      rateControl:
+          type: fixed-rate
+          opts:
+            tps: 50
+      workload:
+        module: benchmarks/samples/fabric/fabcar/createCar.js
+    
+    - label: Execute change car owner transactions
+      txNumber: 200  # 增加到200条交易
+      rateControl:
+          type: fixed-rate
+          opts:
+            tps: 50
+      workload:
+        module: benchmarks/samples/fabric/fabcar/conflictTransactionGenerator.js
+        arguments:
+          paramFile: 'conflictTX.txt'
+    
+    - label: Verify final state
+      txDuration: 10
+      rateControl:
+          type: fixed-rate
+          opts:
+            tps: 2
+      workload:
+        module: benchmarks/samples/fabric/fabcar/queryAllCars.js
+        arguments:
+          startKey: '1'
+          endKey: '100'

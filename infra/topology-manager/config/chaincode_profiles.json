@@ -1,0 +1,46 @@
+{
+  "_comment": "Top-level chaincode profile registry. 'active' selects the default profile; can be overridden by env PERFTUNER_CHAINCODE or by passing --chaincode <name> to scripts that support it. 'src_dir' is relative to infra/topology-manager/. 'caliper_config' is relative to infra/caliper-benchmarks/.",
+  "active": "smallbank",
+  "profiles": {
+    "smallbank": {
+      "name": "smallbank",
+      "version": "1.0",
+      "sequence": 1,
+      "lang": "golang",
+      "src_dir": "chaincode/smallbank",
+      "init_required": false,
+      "caliper_config": "benchmarks/scenario/smallbank/config.yaml"
+    },
+"ioheavy": {
+      "name": "ioheavy",
+      "version": "1.0",
+      "sequence": 1,
+      "lang": "golang",
+      "src_dir": "chaincode/ioheavy",
+      "init_required": false,
+      "caliper_config": "benchmarks/scenario/ioheavy/config.yaml"
+    },
+    "token-erc-20": {
+      "name": "token_erc20",
+      "version": "1.0",
+      "sequence": 1,
+      "lang": "golang",
+      "src_dir": "chaincode/token-erc-20",
+      "init_required": false,
+      "endorsement_policy": "OR('Org1MSP.member')",
+      "caliper_config": "benchmarks/scenario/token-erc-20/config.yaml"
+    },
+    "tpcc": {
+      "name": "tpcc",
+      "version": "1.0",
+      "sequence": 1,
+      "lang": "golang",
+      "src_dir": "chaincode/tpcc",
+      "init_required": true,
+      "init_fn": "LoadData",
+      "init_args": ["1"],
+      "endorsement_policy": "OR('Org1MSP.member')",
+      "caliper_config": "benchmarks/scenario/tpcc/config.yaml"
+    }
+  }
+}

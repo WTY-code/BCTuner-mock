@@ -1,0 +1,42 @@
+{
+  "chaincode": "ioheavy",
+  "histograms": [],
+  "joint_groups": [],
+  "bypass_functions": [
+    "batch_get"
+  ],
+  "functions": {
+    "batch_put": {
+      "body": [
+        {
+          "type": "iterate",
+          "var": "i",
+          "start": "0",
+          "count": "${arg.1}",
+          "body": [
+            {
+              "type": "write",
+              "key": "k:${arg.2}_${arg.0}_${i}"
+            }
+          ]
+        }
+      ]
+    },
+    "batch_get": {
+      "body": [
+        {
+          "type": "iterate",
+          "var": "i",
+          "start": "0",
+          "count": "${arg.1}",
+          "body": [
+            {
+              "type": "read",
+              "key": "k:${arg.2}_${arg.0}_${i}"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

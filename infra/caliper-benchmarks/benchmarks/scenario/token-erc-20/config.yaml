@@ -1,0 +1,28 @@
+rateControl: &rate
+  type: fixed-rate
+  opts:
+    tps: 500
+
+test:
+  name: token-erc-20
+  description: Token ERC-20 benchmark (mint + transfer).
+  workers:
+    number: 5
+  rounds:
+    - label: mint
+      txNumber: 1000
+      rateControl: *rate
+      workload:
+        module: benchmarks/scenario/token-erc-20/tokenWorkload.js
+        arguments:
+          mode: mint
+          numAccounts: 200
+    - label: transfer
+      txNumber: 4000
+      rateControl: *rate
+      workload:
+        module: benchmarks/scenario/token-erc-20/tokenWorkload.js
+        arguments:
+          mode: transfer
+          numAccounts: 200
+          skew: 1.2

@@ -1,0 +1,20 @@
+rateControl: &rate
+  type: fixed-rate
+  opts:
+    tps: 1000
+
+test:
+  name: token
+  description: experiment
+  workers:
+    number: 5
+  rounds:
+    - label: run
+      txNumber: 5000
+      rateControl: *rate
+      workload:
+        module: benchmarks/scenario/token-erc-20/tokenWorkload.js
+        arguments:
+          mode: transfer
+          numAccounts: 500
+          skew: 1.2

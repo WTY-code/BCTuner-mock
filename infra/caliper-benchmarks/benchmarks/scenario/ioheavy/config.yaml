@@ -1,0 +1,29 @@
+rateControl: &rate
+  type: fixed-rate
+  opts:
+    tps: 500
+
+test:
+  name: ioheavy
+  description: IO-heavy chaincode benchmark (batch put + get with loop expansion).
+  workers:
+    number: 5
+  rounds:
+    - label: batch_put
+      txNumber: 2000
+      rateControl: *rate
+      workload:
+        module: benchmarks/scenario/ioheavy/ioheavyWorkload.js
+        arguments:
+          mode: batch_put
+          numPrefixes: 10
+          batchSize: 50
+    - label: batch_get
+      txNumber: 2000
+      rateControl: *rate
+      workload:
+        module: benchmarks/scenario/ioheavy/ioheavyWorkload.js
+        arguments:
+          mode: batch_get
+          numPrefixes: 10
+          batchSize: 50

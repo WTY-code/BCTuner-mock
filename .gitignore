@@ -1,0 +1,113 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+log/
+!log/.gitkeep
+
+# Environment variables
+.env
+.venv
+venv/
+ENV/
+
+# Data and Artifacts (Exclude large generated files)
+artifacts/world_state/*
+!artifacts/world_state/.gitkeep
+artifacts/histograms/*
+!artifacts/histograms/.gitkeep
+# Generated experiment data and workload files
+data/batch_experiments/*
+!data/batch_experiments/.gitkeep
+data/experiments/
+data/ioheavy_experiment/
+data/ioheavy_workload/
+data/smallbank_experiment/
+data/smallbank_workload/
+data/token-erc-20_workload/
+data/token_experiment/
+data/tpcc_experiment/
+data/tpcc_workload/
+
+# Node/Caliper
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Fabric Crypto Materials (Do not commit private keys/certs)
+infra/topology-manager/artifacts/crypto-config/*
+infra/topology-manager/artifacts/channel-artifacts/*
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temporary Files
+data/tmp/*
+!data/tmp/.gitkeep
+
+# PerfTuner Agent & Server generated files
+best_config.json
+.fabricclaw/
+infra/local_config_server/config/tuning_params.json
+*.log
+
+# PerfTuner temp backup directories and runtime files
+param-config/temp/*_bk/
+param-config/temp/run.log
+param-config/temp/experience.jsonl
+param-config/temp/iteration.jsonl
+param-config/temp/explore_send_rate.jsonl
+
+# Topology Manager generated files
+infra/topology-manager/ansible/inventory/hosts.ini
+infra/topology-manager/config/enhanced_network_config.json
+infra/topology-manager/config/tuning_params.json
+infra/topology-manager/artifacts/
+infra/topology-manager/__pycache__/
+infra/topology-manager/*.pyc
+infra/topology-manager/.DS_Store
+
+# Chaincode vendor dependencies (regenerated via setup script)
+infra/topology-manager/chaincode/*/vendor/
+
+# Caliper generated files and reports
+infra/caliper-benchmarks/report.html
+infra/caliper-benchmarks/launch.json
+infra/caliper-benchmarks/*.html
+infra/caliper-benchmarks/node_modules/*
+infra/caliper-benchmarks/package-lock.json
+infra/caliper-benchmarks/package.json
+infra/caliper-benchmarks/**/__pycache__/**
+infra/caliper-benchmarks/pkg
+infra/caliper-benchmarks/bin
+infra/caliper-benchmarks/.vscode
+infra/caliper-benchmarks/*.json
+
+# Static chaincode reference repos (external, not tracked)
+static/chaincode/

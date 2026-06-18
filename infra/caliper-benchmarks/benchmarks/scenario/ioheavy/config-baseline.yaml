@@ -1,0 +1,20 @@
+rateControl: &rate
+  type: fixed-rate
+  opts:
+    tps: 500
+
+test:
+  name: ioheavy
+  description: experiment
+  workers:
+    number: 5
+  rounds:
+    - label: run
+      txNumber: 5000
+      rateControl: *rate
+      workload:
+        module: benchmarks/scenario/ioheavy/ioheavyWorkload.js
+        arguments:
+          mode: batch_put
+          numPrefixes: 10
+          batchSize: 50

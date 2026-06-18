@@ -1,0 +1,19 @@
+rateControl: &rate
+  type: fixed-rate
+  opts:
+    tps: 1000
+
+test:
+  name: token_erc20
+  description: ledger init
+  workers:
+    number: 5
+  rounds:
+    - label: init
+      txNumber: 10000
+      rateControl: *rate
+      workload:
+        module: benchmarks/scenario/token-erc-20/customWorkLoad.js
+        arguments:
+          txFilePath: /root/workspace2/PerfTuner/data/token-erc-20_workload/init_mint.json
+          contractId: token_erc20

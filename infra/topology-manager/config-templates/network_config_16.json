@@ -1,0 +1,151 @@
+{
+  "network_type": "private",
+  "machines": [
+    {
+      "name": "machine1",
+      "public_ip": "",
+      "private_ip": "192.168.0.225",
+      "user": "username",
+      "password": "yourpassword"
+    },
+    {
+      "name": "machine2",
+      "public_ip": "",
+      "private_ip": "192.168.0.74",
+      "user": "username",
+      "password": "yourpassword"
+    },
+    {
+      "name": "machine3",
+      "public_ip": "",
+      "private_ip": "192.168.0.106",
+      "user": "username",
+      "password": "yourpassword"
+    },
+    {
+      "name": "machine4",
+      "public_ip": "",
+      "private_ip": "192.168.0.87",
+      "user": "username",
+      "password": "yourpassword"
+    }
+  ],
+  "topology": {
+    "orderers": {
+      "count": 3,
+      "domain": "example.com",
+      "placements": [
+        {
+          "node": "orderer0",
+          "machine": "machine1"
+        },
+        {
+          "node": "orderer1",
+          "machine": "machine1"
+        },
+        {
+          "node": "orderer2",
+          "machine": "machine2"
+        }
+      ]
+    },
+    "orgs": [
+      {
+        "name": "Org1",
+        "domain": "org1.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine1"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine1"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine1"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine1"
+          }
+        ]
+      },
+      {
+        "name": "Org2",
+        "domain": "org2.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine2"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine2"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine2"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine2"
+          }
+        ]
+      },
+      {
+        "name": "Org3",
+        "domain": "org3.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine3"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine3"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine3"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine3"
+          }
+        ]
+      },
+      {
+        "name": "Org4",
+        "domain": "org4.example.com",
+        "peers": 4,
+        "placements": [
+          {
+            "node": "peer0",
+            "machine": "machine4"
+          },
+          {
+            "node": "peer1",
+            "machine": "machine4"
+          },
+          {
+            "node": "peer2",
+            "machine": "machine4"
+          },
+          {
+            "node": "peer3",
+            "machine": "machine4"
+          }
+        ]
+      }
+    ]
+  },
+  "channel": {
+    "name": "mychannel",
+    "profile": "TwoOrgsChannel"
+  }
+}

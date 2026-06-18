@@ -1,0 +1,52 @@
+test:
+  workers:
+    number: 1
+  rounds:
+    - label: group_0
+      txNumber: 100
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 100
+      workload:
+        module: benchmarks/scenario/smallbank/customWorkLoad.js
+        arguments:
+          contractId: smallbank
+          contractVersion: '1.0'
+          txFilePath: ../../data/benchmark/output1223/groups/group_0.json
+    - label: group_1
+      txNumber: 100
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 100
+      workload:
+        module: benchmarks/scenario/smallbank/customWorkLoad.js
+        arguments:
+          contractId: smallbank
+          contractVersion: '1.0'
+          txFilePath: ../../data/benchmark/output1223/groups/group_1.json
+    - label: group_2
+      txNumber: 100
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 100
+      workload:
+        module: benchmarks/scenario/smallbank/customWorkLoad.js
+        arguments:
+          contractId: smallbank
+          contractVersion: '1.0'
+          txFilePath: ../../data/benchmark/output1223/groups/group_2.json
+    - label: group_3
+      txNumber: 100
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 100
+      workload:
+        module: benchmarks/scenario/smallbank/customWorkLoad.js
+        arguments:
+          contractId: smallbank
+          contractVersion: '1.0'
+          txFilePath: ../../data/benchmark/output1223/groups/group_3.json

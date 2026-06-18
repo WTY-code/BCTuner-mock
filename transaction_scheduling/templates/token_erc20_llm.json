@@ -1,0 +1,79 @@
+{
+  "chaincode": "token_erc20",
+  "histograms": [
+    "Balance"
+  ],
+  "joint_groups": [],
+  "bypass_functions": [
+    "balance_of",
+    "totalSupply"
+  ],
+  "functions": {
+    "mint": {
+      "body": [
+        {
+          "type": "read",
+          "key": "balance:${arg.0}"
+        },
+        {
+          "type": "write",
+          "key": "balance:${arg.0}"
+        }
+      ]
+    },
+    "transfer": {
+      "body": [
+        {
+          "type": "read",
+          "key": "balance:${arg.0}"
+        },
+        {
+          "type": "read",
+          "key": "balance:${arg.1}"
+        },
+        {
+          "type": "branch",
+          "condition": {
+            "kind": "linear_1d",
+            "field": "Balance",
+            "op": ">=",
+            "rhs": "${arg.2}"
+          },
+          "then_tag": "success",
+          "else_tag": "abort",
+          "then": [
+            {
+              "type": "write",
+              "key": "balance:${arg.0}"
+            },
+            {
+              "type": "read",
+              "key": "balance:${arg.1}"
+            },
+            {
+              "type": "write",
+              "key": "balance:${arg.1}"
+            }
+          ],
+          "else": []
+        }
+      ]
+    },
+    "balance_of": {
+      "body": [
+        {
+          "type": "read",
+          "key": "balance:${arg.0}"
+        }
+      ]
+    },
+    "totalSupply": {
+      "body": [
+        {
+          "type": "read",
+          "key": "totalSupply"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,16 @@
+rateControl: &rate
+  type: fixed-rate
+  opts:
+    tps: 500
+
+test:
+  name: smallbank
+  description: baseline
+  workers:
+    number: 5
+  rounds:
+    - label: modify
+      txNumber: 5000
+      rateControl: *rate
+      workload:
+        module: benchmarks/scenario/smallbank/modify.js

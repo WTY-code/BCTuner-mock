@@ -1,0 +1,22 @@
+smallbankArgs: &smallbank-args
+  accountsGenerated: 10000
+  txnPerBatch: 1
+
+test:
+  name: smallbank-world-state-query
+  description: Query Smallbank world state and save to JSON file.
+  workers:
+    number: 1
+  rounds:
+    - label: query-world-state
+      txNumber: 1
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: benchmarks/scenario/smallbank/queryWorldState.js
+        arguments:
+          <<: *smallbank-args
+          contractId: smallbank
+          outputPath: /root/publicip/PerfTuner/artifacts/world_state/world_state.json

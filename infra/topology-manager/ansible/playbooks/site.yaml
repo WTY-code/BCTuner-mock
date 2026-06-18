@@ -1,0 +1,98 @@
+
+---
+- name: Deploy Fabric Network
+  hosts: fabric_nodes
+  gather_facts: no
+  vars:
+    remote_base_dir: /root/fabric_deployment
+    local_artifacts_dir: "{{ playbook_dir }}/../../artifacts"
+    # Active chaincode source dir, relative to infra/topology-manager/.
+    # Override via `-e chaincode_src_dir=chaincode/<name>` (3_deploy.py does this automatically).
+    chaincode_src_dir: "chaincode/smallbank"
+
+  tasks:
+    - name: Force cleanup existing containers
+      shell: "docker ps -q | xargs -r docker kill && docker ps -aq | xargs -r docker rm"
+      ignore_errors: yes
+
+    - name: Prune Docker system
+      shell: "docker network prune -f && docker volume prune -f"
+      ignore_errors: yes
+
+    - name: Create deployment directory
+      file:
+        path: "{{ remote_base_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Create subdirectories
+      file:
+        path: "{{ remote_base_dir }}/{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - channel-artifacts
+        - crypto-config
+        # - chaincode/go  <-- Removed because we might copy the whole directory structure from cache
+
+    - name: Check if crypto-config already exists on remote
+      stat:
+        path: "/root/fabric_resources/crypto-config"
+      register: remote_crypto_config
+
+    - name: Copy crypto-config from Cache (Local on Remote)
+      shell: |
+        cp -r /root/fabric_resources/crypto-config {{ remote_base_dir }}/crypto-config/
+      when: remote_crypto_config.stat.exists and remote_crypto_config.stat.isdir
+
+    - name: Copy crypto-config (Shared) - Fallback and Cache
+      copy:
+        src: "{{ local_artifacts_dir }}/crypto-config/"
+        dest: "{{ remote_base_dir }}/crypto-config/"
+        mode: '0755'
+      when: not remote_crypto_config.stat.exists
+
+    - name: Cache crypto-config on Remote
+      shell: |
+        cp -r {{ remote_base_dir }}/crypto-config /root/fabric_resources/
+      when: not remote_crypto_config.stat.exists
+
+    - name: Copy channel-artifacts (Shared)
+      copy:
+        src: "{{ local_artifacts_dir }}/channel-artifacts/"
+        dest: "{{ remote_base_dir }}/channel-artifacts/"
+
+    - name: Check if cached chaincode exists
+      stat:
+        path: "/root/fabric_resources/chaincode"
+      register: cached_chaincode
+
+    - name: Copy Chaincode from Cache (Local on Remote)
+      shell: |
+        rm -rf {{ remote_base_dir }}/chaincode/go
+        mkdir -p {{ remote_base_dir }}/chaincode/go
+        cp -r /root/fabric_resources/chaincode/* {{ remote_base_dir }}/chaincode/go/
+      when: cached_chaincode.stat.exists
+
+    - name: Copy Chaincode Source (Fallback)
+      copy:
+        src: "{{ playbook_dir }}/../../{{ chaincode_src_dir }}/"
+        dest: "{{ remote_base_dir }}/chaincode/go/"
+      when: not cached_chaincode.stat.exists
+
+    - name: Copy Docker Compose File (Machine Specific)
+      copy:
+        src: "{{ local_artifacts_dir }}/docker-compose-{{ inventory_hostname }}.yaml"
+        dest: "{{ remote_base_dir }}/docker-compose.yaml"
+
+    - name: Start Fabric Services
+      shell: docker-compose up -d
+      args:
+        chdir: "{{ remote_base_dir }}"
+
+    - name: Verify Containers
+      shell: docker ps --format '{{ "{{" }}.Names{{ "}}" }}'
+      register: docker_ps
+    
+    - debug:
+        msg: "Running containers on {{ inventory_hostname }}: {{ docker_ps.stdout_lines }}"

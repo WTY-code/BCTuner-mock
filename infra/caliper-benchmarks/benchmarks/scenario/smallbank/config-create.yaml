@@ -1,0 +1,22 @@
+smallbankArgs: &smallbank-args
+  accountsGenerated: 10000
+  txnPerBatch: 1
+
+rateControl: &rate
+  type: fixed-rate
+  opts:
+    tps: 2000
+
+test:
+  name: smallbank
+  description: Smallbank benchmark for evaluating create, modify, and query operations.
+  workers:
+    number: 5
+  rounds:
+    - label: create
+      txNumber: 10000
+      rateControl: *rate
+      workload:
+        module: benchmarks/scenario/smallbank/create.js
+        arguments: *smallbank-args
+

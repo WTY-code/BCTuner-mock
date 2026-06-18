@@ -1,0 +1,19 @@
+rateControl: &rate
+  type: fixed-rate
+  opts:
+    tps: 1000
+
+test:
+  name: smallbank
+  description: ledger init
+  workers:
+    number: 5
+  rounds:
+    - label: init
+      txNumber: 10000
+      rateControl: *rate
+      workload:
+        module: benchmarks/scenario/smallbank/customWorkLoad.js
+        arguments:
+          txFilePath: /root/workspace2/PerfTuner/data/smallbank_workload/init_create.json
+          contractId: smallbank

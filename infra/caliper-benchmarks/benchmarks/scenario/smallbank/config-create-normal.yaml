@@ -1,0 +1,16 @@
+test:
+  workers:
+    number: 1
+  rounds:
+    - label: create-accounts-normal
+      txNumber: 100000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1000
+      workload:
+        module: benchmarks/scenario/smallbank/customWorkLoad.js
+        arguments:
+          contractId: smallbank
+          contractVersion: '1.0'
+          txFilePath: /root/publicip/PerfTuner/data/tmp/accounts_create_normal.json

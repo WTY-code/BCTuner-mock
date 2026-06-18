@@ -1,0 +1,18 @@
+test:
+  workers:
+    number: 1  # 只需要一个worker来执行查询
+  rounds:
+    
+    - label: custom workload
+      description: read transactions from a json file and send request to fabric
+      txNumber: 2
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1  # 低TPS即可
+      workload:
+        module: benchmarks/samples/fabric/fabcar/customWorkLoad.js
+        arguments:
+          contractId: fabcar
+          txFilePath: "benchmarks/samples/fabric/fabcar/transactions.json"
+      duration: 60  # 添加最大持续时间，防止无限等待

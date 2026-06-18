@@ -1,0 +1,20 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: {{ orderer_domain }}
+    Specs:
+{% for i in range(orderer_count) %}
+      - Hostname: {{ orderer_names[i] }}
+{% endfor %}
+
+PeerOrgs:
+{% for org in orgs %}
+  - Name: {{ org.name }}
+    Domain: {{ org.domain }}
+    EnableNodeOUs: true
+    Specs:
+{% for p in org.placements %}
+      - Hostname: {{ p.node }}
+{% endfor %}
+    Users:
+      Count: 1
+{% endfor %}
