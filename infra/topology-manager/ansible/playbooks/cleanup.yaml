@@ -2,6 +2,8 @@
 - name: Cleanup Fabric Network
   hosts: fabric_nodes
   gather_facts: no
+  vars:
+    remote_resources_dir: /root/fabric_resources
   tasks:
     - name: Kill all containers
       shell: "timeout 30 docker ps -q | xargs -r docker kill"
@@ -17,12 +19,12 @@
 
     - name: Purge remote caches (if requested)
       file:
-        path: "/root/fabric_resources/crypto-config"
+        path: "{{ remote_resources_dir }}/crypto-config"
         state: absent
       when: purge_cache | default(false) | bool
 
     - name: Purge channel-artifacts cache (if requested)
       file:
-        path: "/root/fabric_resources/channel-artifacts"
+        path: "{{ remote_resources_dir }}/channel-artifacts"
         state: absent
       when: purge_cache | default(false) | bool

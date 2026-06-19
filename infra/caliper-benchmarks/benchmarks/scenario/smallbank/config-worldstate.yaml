@@ -19,4 +19,4 @@ test:
         arguments:
           <<: *smallbank-args
           contractId: smallbank
-          outputPath: /root/publicip/PerfTuner/artifacts/world_state/world_state.json
+          outputPath: ../../artifacts/world_state/world_state.json

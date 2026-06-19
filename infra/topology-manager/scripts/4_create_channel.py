@@ -14,17 +14,18 @@ def load_config():
     with open(CONFIG_PATH, 'r') as f:
         return json.load(f)
 
-def run_ssh_cmd(ip, password, cmd):
-    ssh_cmd = f"ssh -o StrictHostKeyChecking=no root@{ip} \"{cmd}\""
+def run_ssh_cmd(ip, user, password, cmd):
+    ssh_cmd = f"ssh -o StrictHostKeyChecking=no {user}@{ip} \"{cmd}\""
     subprocess.run(ssh_cmd, shell=True, check=True)
 
 def copy_artifacts(machines):
     print("Syncing channel artifacts to all machines...")
     for machine in machines:
         ip = machine['host_ip']
+        user = machine.get('user', 'root')
         pw = machine['password']
-        # Copy all files in channel-artifacts to remote
-        cmd = f"scp -o StrictHostKeyChecking=no -r {CHANNEL_ARTIFACTS_DIR}/* root@{ip}:/root/fabric_deployment/channel-artifacts/"
+        remote_base = machine.get('remote_base_dir', '/root/fabric_deployment')
+        cmd = f"scp -o StrictHostKeyChecking=no -r {CHANNEL_ARTIFACTS_DIR}/* {user}@{ip}:{remote_base}/channel-artifacts/"
         try:
             subprocess.run(cmd, shell=True, check=True)
             print(f"  Synced to {machine['name']} ({ip})")
@@ -56,6 +57,7 @@ def join_orderers(config):
             continue
             
         ip = machine['host_ip']
+        user = machine.get('user', 'root')
         pw = machine['password']
         port = placement['ports']['admin'] # Use admin port for osnadmin
         
@@ -94,8 +96,8 @@ def join_orderers(config):
             
             # Update target IP/Machine for SSH command to be the fallback machine
             ip = fallback_machine['host_ip']
+            user = fallback_machine.get('user', 'root')
             pw = fallback_machine['password']
-            # We can always use full_name because extra_hosts is injected in all containers
             target_address = f"{full_name}:{port}"
         else:
             # Local execution
@@ -116,7 +118,7 @@ def join_orderers(config):
         
         full_cmd = f"docker exec {cli_container} {cmd}"
         try:
-            run_ssh_cmd(ip, pw, full_cmd)
+            run_ssh_cmd(ip, user, pw,full_cmd)
             print(f"  Successfully joined {full_name}")
         except subprocess.CalledProcessError:
             print(f"  Failed to join {full_name} (might already be joined)")
@@ -137,6 +139,7 @@ def join_peers(config):
                 continue
                 
             ip = machine['host_ip']
+            user = machine.get('user', 'root')
             pw = machine['password']
             cli_container = f"cli-{full_name}"
             
@@ -156,7 +159,7 @@ def join_peers(config):
             full_cmd = f"docker exec {cli_container} {cmd}"
             
             try:
-                run_ssh_cmd(ip, pw, full_cmd)
+                run_ssh_cmd(ip, user, pw,full_cmd)
                 print(f"  Successfully joined {full_name}")
             except subprocess.CalledProcessError:
                  print(f"  Failed to join {full_name} (might already be joined or container down)")

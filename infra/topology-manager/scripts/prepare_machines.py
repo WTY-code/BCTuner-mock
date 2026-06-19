@@ -5,9 +5,9 @@ import os
 import time
 from pathlib import Path
 
-def run_ssh_command(ip, password, command):
+def run_ssh_command(ip, user, password, command):
     """Executes a remote command via sshpass/ssh."""
-    full_cmd = f"ssh -o StrictHostKeyChecking=no root@{ip} \"{command}\""
+    full_cmd = f"ssh -o StrictHostKeyChecking=no {user}@{ip} \"{command}\""
     print(f"[{ip}] Executing: {command}")
     try:
         subprocess.run(full_cmd, shell=True, check=True)
@@ -23,14 +23,14 @@ def prepare_machines(config_path):
     network_type = config.get('network_type', 'private')
     
     # Commands to clean up Docker environment
+    remote_base_default = "/root/fabric_deployment"
     cleanup_cmds = [
         "docker ps -q | xargs -r docker stop",
         "docker ps -aq | xargs -r docker rm",
         "docker volume prune -f",
         "docker network prune -f",
-        "rm -rf /root/fabric_deployment"  # Clean previous deployment dir if exists
     ]
-    
+
     # Check images and pull if missing (with clash toggle attempt)
     # Using specific tags from your local setup: 3.1.3 for peer/orderer, 3.0.0-preview for tools
     images = [
@@ -39,29 +39,33 @@ def prepare_machines(config_path):
         "hyperledger/fabric-tools:3.0.0-preview",
         "hyperledger/fabric-ca:1.5"
     ]
-    
+
     for machine in machines:
         print(f"\n=== Preparing Machine: {machine['name']} ===")
         ip = machine['public_ip'] if network_type == 'public' else machine['private_ip']
+        user = machine.get('user', 'root')
         pw = machine['password']
-        
+        remote_base = machine.get('remote_base_dir', remote_base_default)
+
         # 1. Cleanup
         for cmd in cleanup_cmds:
-            run_ssh_command(ip, pw, cmd)
-            
+            run_ssh_command(ip, user, pw, cmd)
+        # Clean previous deployment dir if exists
+        run_ssh_command(ip, user, pw, f"rm -rf {remote_base}")
+
         # 2. Check and Pull Images
         for img in images:
             check_cmd = f"docker image inspect {img} > /dev/null 2>&1"
             try:
                 # Check if image exists remotely
-                subprocess.run(f"ssh -o StrictHostKeyChecking=no root@{ip} \"{check_cmd}\"", shell=True, check=True)
+                subprocess.run(f"ssh -o StrictHostKeyChecking=no {user}@{ip} \"{check_cmd}\"", shell=True, check=True)
                 print(f"[{ip}] Image {img} exists.")
             except subprocess.CalledProcessError:
                 print(f"[{ip}] Image {img} missing. Attempting pull...")
                 # Try pull directly
                 pull_cmd = f"docker pull {img}"
                 try:
-                    run_ssh_command(ip, pw, pull_cmd)
+                    run_ssh_command(ip, user, pw, pull_cmd)
                 except:
                     print(f"[{ip}] Direct pull failed. Trying Clash toggle...")
                     # Toggle Clash (assuming command 'clash' starts it, and we kill it after?) 

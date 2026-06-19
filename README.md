@@ -52,43 +52,69 @@ pip install numpy pyyaml
 ## Parameter Tuning (paper §III)
 
 A LangGraph multi-agent system that navigates Fabric's 102-parameter
-configuration space through a ReAct-style closed loop. The Harness mediates
-all agent–environment interaction, enforcing termination conditions and memory
-discipline.
+configuration space through a ReAct-style closed loop. The agent proposes
+configuration changes, deploys them to a running Fabric network via a local
+config server, measures throughput, and refines its proposals based on
+structured reflection. A Harness mediates all agent–environment interaction:
+it enforces three termination conditions (exploration depth, group
+diversification, and trend stabilization), mediates tool calls, and triggers
+length-based context compression when the conversation history approaches the
+LLM context window. Two semantic knowledge bases — parameter semantics and
+topology cliff profiles — ground the agent's reasoning. A dedicated Send-Rate
+Prober identifies the optimal `(block_size, send_rate)` pair for each
+candidate configuration. The core logic lives in `parameter_tuning/core/`;
+run `python main.py --help` for the full option set.
 
-| Paper component                                            | Code                                                                                                                     |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Main Agent ReAct loop (§III.A.1)                           | `core/graph.py`, `core/nodes.py` — `think_node`, `parse_node`                                                            |
-| Send-Rate Prober (§III.A.2)                                | `core/nodes.py` — `deploy_and_test_rate_explorer_node`, `think_rate_explorer_node`, `parse_rate_explorer_node`           |
-| Experience Distiller (§III.A.3)                            | `core/nodes.py` — `summarizer_node`                                                                                      |
-| Harness three-condition termination guard (§III.B.1)       | `core/nodes.py` — `guard_node`, `_check_exploration_depth`, `_check_group_diversification`, `_check_trend_stabilization` |
-| Tool mediation (§III.B.2)                                  | `core/tools.py` — `diagnose`, `retrieve_knowledge`, `reflect`, `make_test_tool`                                          |
-| Semantic memory KBs (§III.B.3)                             | `knowledge/para_explain.jsonl`, `knowledge/topology_kb.jsonl`                                                            |
-| Length-triggered context compression (§III.B.3)            | `utils/utils.py` — `manage_context`                                                                                      |
-| Topology-specific probing via `cliff_sharpness` (§III.A.2) | `core/nodes.py` — `_build_topology_guidance`                                                                             |
+### Running the Parameter Tuning Experiment
 
-### Run
+This reproduces the main parameter-tuning evaluation described in §V of the
+paper. It requires a running Fabric network (see [Infrastructure](#infrastructure-paper-v)
+below) and the local config server.
 
-First start the local config server (one terminal):
+**Step 1 — Start the config server** (one terminal):
 
 ```bash
 python infra/local_config_server/server.py
 ```
 
-Then run the agent (another terminal):
+The server exposes a REST API on `http://127.0.0.1:8080` that lets the agent
+read and write Fabric parameters on the target network.
+
+**Step 2 — Run the tuning agent** (another terminal):
 
 ```bash
 cd parameter_tuning
 python main.py --url http://127.0.0.1:8080 --topology 8p --max-steps 10 --tps 2000
 ```
 
-Outputs are written to `parameter_tuning/temp/`:
+Key arguments:
 
-- `experience.jsonl` — per-trial structured deltas (episodic memory)
-- `iteration.jsonl` — per-step state log
-- `explore_send_rate.jsonl` — Send-Rate Prober trajectory
-- `best_config.json` — best-found Fabric configuration
-- `best_send_rate.json` — best-found send\_rate for that configuration
+| Flag | Meaning | Paper context |
+|------|---------|---------------|
+| `--topology` | Fabric topology specifier (e.g. `8p` = 8-peer) | §V.A — experimental topologies |
+| `--max-steps` | Maximum ReAct iterations | §III.B.1 — termination guard |
+| `--tps` | Target raw throughput (tps) | §V.B — workload generator setting |
+
+The agent writes per-step state to `parameter_tuning/temp/`:
+
+| File | Content |
+|------|---------|
+| `experience.jsonl` | Per-trial structured deltas (episodic memory) |
+| `iteration.jsonl` | Full per-step agent state log |
+| `explore_send_rate.jsonl` | Send-Rate Prober trajectory |
+| `best_config.json` | Best-found Fabric configuration |
+| `best_send_rate.json` | Optimal send\_rate paired with `best_config.json` |
+
+**Reproducing the full paper result** — To sweep all topologies and
+chaincodes reported in §V, use the orchestration script:
+
+```bash
+python infra/topology-manager/scripts/run_experiment.py --chaincode smallbank
+```
+
+This script sequences network deployment, chaincode installation, Caliper
+benchmarking, and result logging. Chaincodes: `smallbank`, `token-erc-20`,
+`ioheavy`.
 
 ***
 

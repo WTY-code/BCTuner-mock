@@ -15,5 +15,5 @@ test:
       workload:
         module: benchmarks/scenario/smallbank/customWorkLoad.js
         arguments:
-          txFilePath: /root/workspace2/PerfTuner/data/smallbank_workload/init_create.json
+          txFilePath: ../../data/smallbank_workload/init_create.json
           contractId: smallbank

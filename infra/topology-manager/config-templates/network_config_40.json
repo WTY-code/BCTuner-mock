@@ -4,72 +4,72 @@
     {
       "name": "machine1",
       "public_ip": "",
-      "private_ip": "192.168.0.227",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
-      "password": "yourpasssword"
+      "password": "yourpassword"
     },
     {
       "name": "machine2",
       "public_ip": "",
-      "private_ip": "192.168.0.200",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
-      "password": "yourpasssword"
+      "password": "yourpassword"
     },
     {
       "name": "machine3",
       "public_ip": "",
-      "private_ip": "192.168.0.122",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
-      "password": "yourpasssword"
+      "password": "yourpassword"
     },
     {
       "name": "machine4",
       "public_ip": "",
-      "private_ip": "192.168.0.129",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
-      "password": "yourpasssword"
+      "password": "yourpassword"
     },
     {
       "name": "machine5",
       "public_ip": "",
-      "private_ip": "192.168.0.63",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
-      "password": "yourpasssword"
+      "password": "yourpassword"
     },
     {
       "name": "machine6",
       "public_ip": "",
-      "private_ip": "192.168.0.134",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
-      "password": "yourpasssword"
+      "password": "yourpassword"
     },
     {
       "name": "machine7",
       "public_ip": "",
-      "private_ip": "192.168.0.251",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
-      "password": "yourpasssword"
+      "password": "yourpassword"
     },
     {
       "name": "machine8",
       "public_ip": "",
-      "private_ip": "192.168.0.205",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
-      "password": "yourpasssword"
+      "password": "yourpassword"
     },
     {
       "name": "machine9",
       "public_ip": "",
-      "private_ip": "192.168.0.14",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
-      "password": "yourpasssword"
+      "password": "yourpassword"
     },
     {
       "name": "machine10",
       "public_ip": "",
-      "private_ip": "192.168.0.244",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
-      "password": "yourpasssword"
+      "password": "yourpassword"
     }
   ],
   "topology": {

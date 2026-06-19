@@ -15,5 +15,5 @@ test:
       workload:
         module: benchmarks/scenario/token-erc-20/customWorkLoad.js
         arguments:
-          txFilePath: /root/workspace2/PerfTuner/data/token-erc-20_workload/init_mint.json
+          txFilePath: ../../data/token-erc-20_workload/init_mint.json
           contractId: token_erc20

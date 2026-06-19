@@ -4,14 +4,14 @@
     {
       "name": "machine1",
       "public_ip": "",
-      "private_ip": "192.168.0.107",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
       "password": "yourpassword"
     },
     {
       "name": "machine2",
       "public_ip": "",
-      "private_ip": "192.168.0.31",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
       "password": "yourpassword"
     }

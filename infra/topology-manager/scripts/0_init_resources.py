@@ -11,7 +11,7 @@ from _profile import load_profile
 # Paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_PATH = BASE_DIR / "config/network_config.json"
-REMOTE_RESOURCE_DIR = "/root/fabric_resources/chaincode"
+REMOTE_RESOURCE_DIR = "/root/fabric_resources/chaincode"  # default; override in machine config via remote_resources_dir
 
 def load_config():
     with open(CONFIG_PATH, 'r') as f:
@@ -33,8 +33,8 @@ def _ensure_stdout_blocking():
         pass
 
 
-def run_ssh_cmd(ip, password, cmd, retries=5):
-    ssh_cmd = f"ssh -o StrictHostKeyChecking=no root@{ip} \"{cmd}\""
+def run_ssh_cmd(ip, user, password, cmd, retries=5):
+    ssh_cmd = f"ssh -o StrictHostKeyChecking=no {user}@{ip} \"{cmd}\""
     for attempt in range(retries):
         try:
             subprocess.run(ssh_cmd, shell=True, check=True)
@@ -57,6 +57,7 @@ def init_resources(config, profile, force=False):
     for machine in machines:
         ip = machine['public_ip'] if network_type == 'public' else machine['private_ip']
         pw = machine['password']
+        user = machine.get('user', 'root')
         name = machine['name']
 
         print(f"\n=== Processing {name} ({ip}) ===")
@@ -66,7 +67,7 @@ def init_resources(config, profile, force=False):
 
         # 1. Create remote resource directory
         print(f"Creating remote directory: {REMOTE_RESOURCE_DIR}")
-        run_ssh_cmd(ip, pw, f"mkdir -p {REMOTE_RESOURCE_DIR}")
+        run_ssh_cmd(ip, user, pw, f"mkdir -p {REMOTE_RESOURCE_DIR}")
 
         # Add delay
         time.sleep(1)
@@ -78,7 +79,7 @@ def init_resources(config, profile, force=False):
         # Retry logic for check command
         for attempt in range(3):
             result = subprocess.run(
-                f"ssh -o StrictHostKeyChecking=no root@{ip} \"{check_cmd}\"",
+                f"ssh -o StrictHostKeyChecking=no {user}@{ip} \"{check_cmd}\"",
                 shell=True, capture_output=True, text=True
             )
             if result.returncode == 0:
@@ -93,9 +94,9 @@ def init_resources(config, profile, force=False):
             if cached_profile != "missing":
                 print(f"Profile changed ({cached_profile} -> {profile['_key']}), refreshing cache on {name}...")
                 # Clean old cache
-                run_ssh_cmd(ip, pw, f"rm -rf {REMOTE_RESOURCE_DIR}/* {REMOTE_RESOURCE_DIR}/.* 2>/dev/null; mkdir -p {REMOTE_RESOURCE_DIR}")
+                run_ssh_cmd(ip, user, pw, f"rm -rf {REMOTE_RESOURCE_DIR}/* {REMOTE_RESOURCE_DIR}/.* 2>/dev/null; mkdir -p {REMOTE_RESOURCE_DIR}")
             print(f"Copying chaincode (including vendor) to {name}...")
-            cmd = f"scp -o StrictHostKeyChecking=no -r {local_chaincode_dir}/* root@{ip}:{REMOTE_RESOURCE_DIR}/"
+            cmd = f"scp -o StrictHostKeyChecking=no -r {local_chaincode_dir}/* {user}@{ip}:{REMOTE_RESOURCE_DIR}/"
 
             for attempt in range(3):
                 try:
@@ -109,7 +110,7 @@ def init_resources(config, profile, force=False):
                     else:
                         raise e
             # Write profile marker
-            run_ssh_cmd(ip, pw, f"echo '{profile['_key']}' > {marker_path}")
+            run_ssh_cmd(ip, user, pw, f"echo '{profile['_key']}' > {marker_path}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

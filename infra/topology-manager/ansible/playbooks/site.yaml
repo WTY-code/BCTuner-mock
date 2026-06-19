@@ -5,6 +5,7 @@
   gather_facts: no
   vars:
     remote_base_dir: /root/fabric_deployment
+    remote_resources_dir: /root/fabric_resources
     local_artifacts_dir: "{{ playbook_dir }}/../../artifacts"
     # Active chaincode source dir, relative to infra/topology-manager/.
     # Override via `-e chaincode_src_dir=chaincode/<name>` (3_deploy.py does this automatically).
@@ -37,12 +38,12 @@
 
     - name: Check if crypto-config already exists on remote
       stat:
-        path: "/root/fabric_resources/crypto-config"
+        path: "{{ remote_resources_dir }}/crypto-config"
       register: remote_crypto_config
 
     - name: Copy crypto-config from Cache (Local on Remote)
       shell: |
-        cp -r /root/fabric_resources/crypto-config {{ remote_base_dir }}/crypto-config/
+        cp -r {{ remote_resources_dir }}/crypto-config {{ remote_base_dir }}/crypto-config/
       when: remote_crypto_config.stat.exists and remote_crypto_config.stat.isdir
 
     - name: Copy crypto-config (Shared) - Fallback and Cache
@@ -54,7 +55,7 @@
 
     - name: Cache crypto-config on Remote
       shell: |
-        cp -r {{ remote_base_dir }}/crypto-config /root/fabric_resources/
+        cp -r {{ remote_base_dir }}/crypto-config {{ remote_resources_dir }}/
       when: not remote_crypto_config.stat.exists
 
     - name: Copy channel-artifacts (Shared)
@@ -64,14 +65,14 @@
 
     - name: Check if cached chaincode exists
       stat:
-        path: "/root/fabric_resources/chaincode"
+        path: "{{ remote_resources_dir }}/chaincode"
       register: cached_chaincode
 
     - name: Copy Chaincode from Cache (Local on Remote)
       shell: |
         rm -rf {{ remote_base_dir }}/chaincode/go
         mkdir -p {{ remote_base_dir }}/chaincode/go
-        cp -r /root/fabric_resources/chaincode/* {{ remote_base_dir }}/chaincode/go/
+        cp -r {{ remote_resources_dir }}/chaincode/* {{ remote_base_dir }}/chaincode/go/
       when: cached_chaincode.stat.exists
 
     - name: Copy Chaincode Source (Fallback)

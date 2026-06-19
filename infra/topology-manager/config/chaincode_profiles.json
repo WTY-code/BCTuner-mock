@@ -11,7 +11,7 @@
       "init_required": false,
       "caliper_config": "benchmarks/scenario/smallbank/config.yaml"
     },
-"ioheavy": {
+    "ioheavy": {
       "name": "ioheavy",
       "version": "1.0",
       "sequence": 1,

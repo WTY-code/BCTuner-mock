@@ -13,12 +13,13 @@ def verify_network():
     
     for machine in machines:
         ip = machine['host_ip']
+        user = machine.get('user', 'root')
         pw = machine['password']
         print(f"\n=== Checking Machine: {ip} ({machine['name']}) ===")
-        
+
         # Check all containers including exited ones
         cmd = "docker ps -a --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
-        full_cmd = f"ssh -o StrictHostKeyChecking=no root@{ip} \"{cmd}\""
+        full_cmd = f"ssh -o StrictHostKeyChecking=no {user}@{ip} \"{cmd}\""
         
         try:
             result = subprocess.run(full_cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

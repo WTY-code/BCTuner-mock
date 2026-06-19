@@ -17,4 +17,4 @@ test:
         arguments:
           contractId: smallbank
           contractVersion: '1.0'
-          txFilePath: /root/publicip/PerfTuner/data/smallbank_workload/init_accounts.json
+          txFilePath: ../../data/smallbank_workload/init_accounts.json

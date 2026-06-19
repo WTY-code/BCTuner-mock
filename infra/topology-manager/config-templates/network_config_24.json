@@ -4,42 +4,42 @@
     {
       "name": "machine1",
       "public_ip": "",
-      "private_ip": "192.168.0.140",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
       "password": "yourpassword"
     },
     {
       "name": "machine2",
       "public_ip": "",
-      "private_ip": "192.168.0.39",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
       "password": "yourpassword"
     },
     {
       "name": "machine3",
       "public_ip": "",
-      "private_ip": "192.168.0.228",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
       "password": "yourpassword"
     },
     {
       "name": "machine4",
       "public_ip": "",
-      "private_ip": "192.168.0.165",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
       "password": "yourpassword"
     },
     {
       "name": "machine5",
       "public_ip": "",
-      "private_ip": "192.168.0.142",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
       "password": "yourpassword"
     },
     {
       "name": "machine6",
       "public_ip": "",
-      "private_ip": "192.168.0.2",
+      "private_ip": "xxx.xxx.xxx.xxx",
       "user": "username",
       "password": "yourpassword"
     }

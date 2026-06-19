@@ -14,8 +14,8 @@ def load_config():
     with open(CONFIG_PATH, 'r') as f:
         return json.load(f)
 
-def run_ssh_cmd(ip, password, cmd):
-    ssh_cmd = f"ssh -o StrictHostKeyChecking=no root@{ip} \"{cmd}\""
+def run_ssh_cmd(ip, user, password, cmd):
+    ssh_cmd = f"ssh -o StrictHostKeyChecking=no {user}@{ip} \"{cmd}\""
     subprocess.run(ssh_cmd, shell=True, check=True)
 
 def reinstall_chaincode(config, profile):
@@ -39,7 +39,7 @@ def reinstall_chaincode(config, profile):
     for p in peers:
         print(f"Installing on {p['cli']}...")
         try:
-            run_ssh_cmd(p['machine']['host_ip'], p['machine']['password'], f"docker exec {p['cli']} {install_cmd}")
+            run_ssh_cmd(p['machine']['host_ip'], p['machine'].get('user', 'root'), p['machine']['password'], f"docker exec {p['cli']} {install_cmd}")
             print(f"  Success: {p['cli']}")
         except subprocess.CalledProcessError as e:
             print(f"  Failed on {p['cli']}: {e}")
@@ -49,7 +49,7 @@ def reinstall_chaincode(config, profile):
     for p in peers:
         print(f"Checking {p['cli']}...")
         try:
-            run_ssh_cmd(p['machine']['host_ip'], p['machine']['password'], f"docker exec {p['cli']} peer lifecycle chaincode queryinstalled")
+            run_ssh_cmd(p['machine']['host_ip'], p['machine'].get('user', 'root'), p['machine']['password'], f"docker exec {p['cli']} peer lifecycle chaincode queryinstalled")
         except:
             pass
 

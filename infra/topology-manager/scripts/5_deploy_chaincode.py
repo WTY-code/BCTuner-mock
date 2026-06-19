@@ -20,12 +20,12 @@ def load_config():
     with open(CONFIG_PATH, 'r') as f:
         return json.load(f)
 
-def run_ssh_cmd(ip, password, cmd):
-    ssh_cmd = f"ssh -o StrictHostKeyChecking=no root@{ip} \"{cmd}\""
+def run_ssh_cmd(ip, user, password, cmd):
+    ssh_cmd = f"ssh -o StrictHostKeyChecking=no {user}@{ip} \"{cmd}\""
     subprocess.run(ssh_cmd, shell=True, check=True)
 
-def get_ssh_output(ip, password, cmd):
-    ssh_cmd = f"ssh -o StrictHostKeyChecking=no root@{ip} \"{cmd}\""
+def get_ssh_output(ip, user, password, cmd):
+    ssh_cmd = f"ssh -o StrictHostKeyChecking=no {user}@{ip} \"{cmd}\""
     result = subprocess.run(ssh_cmd, shell=True, check=True, stdout=subprocess.PIPE)
     return result.stdout.decode().strip()
 
@@ -39,9 +39,10 @@ def sync_artifacts(machines):
     print("Syncing artifacts (including chaincode package & vendor) to all machines...")
     for machine in machines:
         ip = machine['host_ip']
+        user = machine.get('user', 'root')
         pw = machine['password']
-        # Sync channel-artifacts
-        cmd1 = f"scp -o StrictHostKeyChecking=no -r {CHANNEL_ARTIFACTS_DIR}/* root@{ip}:/root/fabric_deployment/channel-artifacts/"
+        remote_base = machine.get('remote_base_dir', '/root/fabric_deployment')
+        cmd1 = f"scp -o StrictHostKeyChecking=no -r {CHANNEL_ARTIFACTS_DIR}/* {user}@{ip}:{remote_base}/channel-artifacts/"
         
         max_retries = 3
         for attempt in range(max_retries):
@@ -91,11 +92,13 @@ def deploy_chaincode(config, profile):
         f"peer lifecycle chaincode package /opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts/{chaincode_name}.tar.gz "
         f"--path {CHAINCODE_PATH} --lang golang --label {chaincode_label}"
     )
-    run_ssh_cmd(org1_leader_machine['host_ip'], org1_leader_machine['password'], f"docker exec {org1_leader_cli} {pkg_cmd}")
+    user = org1_leader_machine.get('user', 'root')
+    run_ssh_cmd(org1_leader_machine['host_ip'], user, org1_leader_machine['password'], f"docker exec {org1_leader_cli} {pkg_cmd}")
 
     # Copy back to manager
     print("Fetching package from Org1 Leader...")
-    fetch_cmd = f"scp -o StrictHostKeyChecking=no root@{org1_leader_machine['host_ip']}:/root/fabric_deployment/channel-artifacts/{chaincode_name}.tar.gz {CHANNEL_ARTIFACTS_DIR}/"
+    remote_base = org1_leader_machine.get('remote_base_dir', '/root/fabric_deployment')
+    fetch_cmd = f"scp -o StrictHostKeyChecking=no {user}@{org1_leader_machine['host_ip']}:{remote_base}/channel-artifacts/{chaincode_name}.tar.gz {CHANNEL_ARTIFACTS_DIR}/"
     subprocess.run(fetch_cmd, shell=True, check=False)
 
     # Sync to all machines so everyone can install
@@ -120,14 +123,14 @@ def deploy_chaincode(config, profile):
             
             print(f"Installing on {cli}...")
             try:
-                run_ssh_cmd(m['host_ip'], m['password'], f"docker exec {cli} {install_cmd}")
+                run_ssh_cmd(m['host_ip'], m.get('user', 'root'), m['password'],f"docker exec {cli} {install_cmd}")
             except subprocess.CalledProcessError:
                  print(f"  Already installed or failed on {cli}")
 
     # Calculate Package ID
     print("\n=== Calculating Package ID ===")
     pkg_id_cmd = f"peer lifecycle chaincode calculatepackageid /opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts/{chaincode_name}.tar.gz"
-    package_id = get_ssh_output(org1_leader_machine['host_ip'], org1_leader_machine['password'], f"docker exec {org1_leader_cli} {pkg_id_cmd}")
+    package_id = get_ssh_output(org1_leader_machine['host_ip'], org1_leader_machine.get('user', 'root'), org1_leader_machine['password'], f"docker exec {org1_leader_cli} {pkg_id_cmd}")
     print(f"Package ID: {package_id}")
     
     # Approve for EACH Org
@@ -158,7 +161,7 @@ def deploy_chaincode(config, profile):
         )
         
         try:
-            run_ssh_cmd(leader_m['host_ip'], leader_m['password'], f"docker exec {leader_cli} {approve_cmd}")
+            run_ssh_cmd(leader_m['host_ip'], leader_m.get('user', 'root'), leader_m['password'], f"docker exec {leader_cli} {approve_cmd}")
         except subprocess.CalledProcessError:
             print(f"  {org['name']} already approved or failed")
             
@@ -188,7 +191,7 @@ def deploy_chaincode(config, profile):
     )
     
     try:
-        run_ssh_cmd(org1_leader_machine['host_ip'], org1_leader_machine['password'], f"docker exec {org1_leader_cli} {commit_cmd}")
+        run_ssh_cmd(org1_leader_machine['host_ip'], org1_leader_machine.get('user', 'root'), org1_leader_machine['password'], f"docker exec {org1_leader_cli} {commit_cmd}")
     except subprocess.CalledProcessError:
         print("  Chaincode already committed or failed")
 
@@ -208,7 +211,7 @@ def deploy_chaincode(config, profile):
             f"{peer_addresses_flags}"
         )
         try:
-            run_ssh_cmd(org1_leader_machine['host_ip'], org1_leader_machine['password'], f"docker exec {org1_leader_cli} {invoke_cmd}")
+            run_ssh_cmd(org1_leader_machine['host_ip'], org1_leader_machine.get('user', 'root'), org1_leader_machine['password'], f"docker exec {org1_leader_cli} {invoke_cmd}")
             time.sleep(5)
             print(f"  Init ({init_fn}) completed.")
         except subprocess.CalledProcessError:

@@ -13,4 +13,4 @@ test:
         arguments:
           contractId: smallbank
           contractVersion: '1.0'
-          txFilePath: /root/publicip/PerfTuner/data/tmp/accounts_create_normal.json
+          txFilePath: ../../data/tmp/accounts_create_normal.json

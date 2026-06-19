@@ -172,12 +172,12 @@ def main():
     parser.add_argument(
         '--conflict-graph',
         default=os.path.join(BASE_DIR, 'artifacts/world_state/output/conflict_graph.json'),
-        help='冲突图文件路径 (默认: /root/workspace/fangtaogu/PerfTuner/artifacts/world_state/output/conflict_graph.json)'
+        help='冲突图文件路径 (默认: artifacts/world_state/output/conflict_graph.json)'
     )
     parser.add_argument(
         '--output',
         default=os.path.join(BASE_DIR, 'artifacts/world_state/output/schedule.json'),
-        help='调度结果输出文件 (默认: /root/workspace/fangtaogu/PerfTuner/artifacts/world_state/output/schedule.json)'   
+        help='调度结果输出文件 (默认: artifacts/world_state/output/schedule.json)'
     )
     parser.add_argument(
         '--blocksize',

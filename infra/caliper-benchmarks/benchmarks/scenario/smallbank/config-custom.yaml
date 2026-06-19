@@ -13,7 +13,7 @@ test:
         arguments:
           contractId: smallbank
           contractVersion: '1.0'
-          txFilePath: ../../data/benchmark/output1223/groups/group_0.json
+          txFilePath: ../../data/benchmark/experiment-run/groups/group_0.json
     - label: group_1
       txNumber: 100
       rateControl:
@@ -25,7 +25,7 @@ test:
         arguments:
           contractId: smallbank
           contractVersion: '1.0'
-          txFilePath: ../../data/benchmark/output1223/groups/group_1.json
+          txFilePath: ../../data/benchmark/experiment-run/groups/group_1.json
     - label: group_2
       txNumber: 100
       rateControl:
@@ -37,7 +37,7 @@ test:
         arguments:
           contractId: smallbank
           contractVersion: '1.0'
-          txFilePath: ../../data/benchmark/output1223/groups/group_2.json
+          txFilePath: ../../data/benchmark/experiment-run/groups/group_2.json
     - label: group_3
       txNumber: 100
       rateControl:
@@ -49,4 +49,4 @@ test:
         arguments:
           contractId: smallbank
           contractVersion: '1.0'
-          txFilePath: ../../data/benchmark/output1223/groups/group_3.json
+          txFilePath: ../../data/benchmark/experiment-run/groups/group_3.json
